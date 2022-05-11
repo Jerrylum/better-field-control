@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './App.scss';
 import { Controller } from './Controller';
 import { defaultMatchProfile, MatchMode, MatchProfile } from './Match';
@@ -6,11 +6,7 @@ import { useWindowSize } from './Util';
 import { CountdownTimer, TimerStatus } from './Timer';
 import { SoundManager } from './SoundManager';
 
-let userSelected = 0;
-
 function App() {
-
-    // const controllers = useRef<Controller[]>([]);
 
     const [controllers, setControllers] = useState<Controller[]>([]);
 
@@ -26,19 +22,17 @@ function App() {
 
     const [controllerState, setControllerState] = useState(0);
 
+    const [timer, setTimer] = useState(new CountdownTimer());
+
     const [timerState, setTimerState] = useState(0);
 
     const [timerUpdateRequest, setTimerUpdateRequest] = useState(0);
 
+    const [timerWarning, setTimerWarning] = useState(false);
+
     const profileDOMsRef = useRef<HTMLElement[]>([]);
 
-    const profileIndicatorInitedRef = useRef(false);
-
-    const timerWarningRef = useRef(false);
-
-    const timerRef = useRef(new CountdownTimer());
-
-    const soundManagerRef = useRef(new SoundManager());
+    const soundManager = useMemo(() => new SoundManager(), []);
 
     const windowSize = useWindowSize();
 
@@ -93,25 +87,24 @@ function App() {
         if (selectedProfile < 0) return "--";
         // HACK: +999 is for the VEX style timer
         // for example: "00:01" means this is the last second, less than 1000 milliseconds
-        let time = Math.trunc((timerRef.current.displayTicks + 999) % 3600000 / 60000);
+        let time = Math.trunc((timer.displayTicks + 999) % 3600000 / 60000);
         return time > 9 ? time + "" : "0" + time;
     }
 
     const getSecondNumber = function () {
         if (selectedProfile < 0) return "--";
-        let time = Math.trunc((timerRef.current.displayTicks + 999) % 60000 / 1000);
+        let time = Math.trunc((timer.displayTicks + 999) % 60000 / 1000);
         return time > 9 ? time + "" : "0" + time;
     }
 
     const btn1ClickEvent = function (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        let timer = timerRef.current;
         if (timer.status === TimerStatus.INIT) {
             setPhaseIndex((past) => past + 1);
         } else if (timer.status === TimerStatus.RUNNING) {
-            timerRef.current.stop();
+            timer.stop();
             setUsingMatchMode("disabled");
         } else if (timer.status === TimerStatus.PAUSE) {
-            timerRef.current.start();
+            timer.start();
             setUsingMatchMode(profiles[selectedProfile].phases[phaseIndex].mode);
         } else if (timer.status === TimerStatus.TIMESUP) {
             let profile = profiles[selectedProfile];
@@ -124,17 +117,16 @@ function App() {
     }
 
     const btn2ClickEvent = function (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        let timer = timerRef.current;
         if (timer.status === TimerStatus.INIT) {
             setSelectedProfile(-1);
             setUsingMatchMode("driver");
         } else if (timer.status === TimerStatus.RUNNING) {
             timer.set(0);
-            soundManagerRef.current.playAbort();
+            soundManager.playAbort();
         } else if (timer.status === TimerStatus.PAUSE) {
             timer.set(0);
             timer.start();
-            soundManagerRef.current.playAbort();
+            soundManager.playAbort();
         } else if (timer.status === TimerStatus.TIMESUP) {
             setSelectedProfile(-1);
             setUsingMatchMode("driver");
@@ -144,7 +136,6 @@ function App() {
     const getBtn1Text = function () {
         if (selectedProfile < 0) return "---";
 
-        let timer = timerRef.current;
         if (timer.status === TimerStatus.INIT) {
             return "Start";
         } else if (timer.status === TimerStatus.RUNNING) {
@@ -164,7 +155,6 @@ function App() {
     const getBtn2Text = function () {
         if (selectedProfile < 0) return "---";
 
-        let timer = timerRef.current;
         if (timer.status === TimerStatus.INIT || timer.status === TimerStatus.TIMESUP) {
             return "Exit";
         } else {
@@ -268,22 +258,21 @@ function App() {
 
             let profile = profiles[selectedProfile];
             let phase = profile.phases[phaseIndex];
-            let timer = timerRef.current;
 
             if (phase.mode === "disabled") return;
 
             if (timer.status === TimerStatus.TIMESUP) {
                 setPhaseIndex(phaseIndex + 1);
                 if (isLastPhaseProfile(profile, phaseIndex))
-                    soundManagerRef.current.playStop();
+                    soundManager.playStop();
                 else
-                    soundManagerRef.current.playPause();
+                soundManager.playPause();
             } else if (timer.isRunning) {
                 if (timer.displayTicks > 30 * 1000) {
-                    timerWarningRef.current = false;
-                } else if (!timerWarningRef.current) {
-                    timerWarningRef.current = true;
-                    soundManagerRef.current.playWarning();
+                    setTimerWarning(false);
+                } else if (!timerWarning) {
+                    setTimerWarning(true);
+                    soundManager.playWarning();
                 }
             }
         }, 1);
@@ -339,24 +328,21 @@ function App() {
         let rect = span.getBoundingClientRect();
         setProfileIndicatorStyle({
             "width": rect.width + "px",
-            "left": (rect.left + rect.width / 2) + "px",
-            ...(
-                profileIndicatorInitedRef.current ? {} : { "transition": "none" }
-            )
+            "left": (rect.left + rect.width / 2) + "px"
         });
 
-        profileIndicatorInitedRef.current = true;
     }, [selectedProfile, windowSize]);
 
     useEffect(() => {
-        timerRef.current.stop();
+        timer.stop();
 
         if (selectedProfile < 0) return;
 
         let profile = profiles[selectedProfile];
         setPhaseIndex(0);
-        timerRef.current = new CountdownTimer();
-        timerRef.current.set(profile.phases[1].duration * 1000);
+        let newTimer = new CountdownTimer();
+        newTimer.set(profile.phases[1].duration * 1000);
+        setTimer(newTimer);
     }, [profiles, selectedProfile]);
 
     useEffect(() => {
@@ -375,8 +361,8 @@ function App() {
         }
 
         if (phase.mode !== "disabled") {
-            timerRef.current.start();
-            soundManagerRef.current.playStart();
+            timer.start();
+            soundManager.playStart();
         } else {
             let nextProfile = profile.phases[phaseIndex + 1];
 
@@ -386,8 +372,9 @@ function App() {
                     return; // dont use the match mode
                 }
 
-                timerRef.current = new CountdownTimer();
-                timerRef.current.set(nextProfile.duration * 1000);
+                let newTimer = new CountdownTimer();
+                newTimer.set(nextProfile.duration * 1000);
+                setTimer(newTimer);
             }
         }
 
@@ -429,13 +416,13 @@ function App() {
                     </div>
                     <div className="timer-info-body">
                         <div className="mode-info">
-                            <span onClick={() => ++userSelected && selectMatchMode("disabled")}>
+                            <span onClick={() => selectMatchMode("disabled")}>
                                 {usingMatchMode === "disabled" ? ">" : "\u00a0"}&nbsp;Disabled
                             </span><br />
-                            <span onClick={() => ++userSelected && selectMatchMode("driver")}>
+                            <span onClick={() => selectMatchMode("driver")}>
                                 {usingMatchMode === "driver" ? ">" : "\u00a0"}&nbsp;Driver
                             </span><br />
-                            <span onClick={() => ++userSelected && selectMatchMode("autonomous")}>
+                            <span onClick={() => selectMatchMode("autonomous")}>
                                 {usingMatchMode === "autonomous" ? ">" : "\u00a0"}&nbsp;Autonomous
                             </span><br />
                             <span></span>
