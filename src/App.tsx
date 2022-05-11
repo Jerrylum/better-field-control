@@ -4,6 +4,7 @@ import { Controller } from './Controller';
 import { defaultMatchProfile, MatchMode, MatchProfile } from './Match';
 import { useWindowSize } from './Util';
 import { CountdownTimer, TimerStatus } from './Timer';
+import { SoundManager } from './SoundManager';
 
 let userSelected = 0;
 
@@ -33,7 +34,11 @@ function App() {
 
     const profileIndicatorInitedRef = useRef(false);
 
+    const timerWarningRef = useRef(false);
+
     const timerRef = useRef(new CountdownTimer());
+
+    const soundManagerRef = useRef(new SoundManager());
 
     const windowSize = useWindowSize();
 
@@ -125,9 +130,11 @@ function App() {
             setUsingMatchMode("driver");
         } else if (timer.status === TimerStatus.RUNNING) {
             timer.set(0);
+            soundManagerRef.current.playAbort();
         } else if (timer.status === TimerStatus.PAUSE) {
             timer.set(0);
             timer.start();
+            soundManagerRef.current.playAbort();
         } else if (timer.status === TimerStatus.TIMESUP) {
             setSelectedProfile(-1);
             setUsingMatchMode("driver");
@@ -178,8 +185,15 @@ function App() {
                 shouldDisable = true;
             }
         }
-        if (shouldDisable) return false; // last phase should be "disabele"
+        if (shouldDisable) return false; // last phase should be "disable"
         return check1;
+    }
+
+    const isLastPhaseProfile = function (profile: MatchProfile, phaseIndex: number) {
+        for (let i = phaseIndex + 1; i < profile.phases.length; i++) {
+            if (profile.phases[i].mode !== "disabled" && profile.phases[i].duration >= 1) return false;
+        }
+        return true;
     }
 
     const getBtnStyle = function () {
@@ -254,9 +268,23 @@ function App() {
 
             let profile = profiles[selectedProfile];
             let phase = profile.phases[phaseIndex];
+            let timer = timerRef.current;
 
-            if (timerRef.current.status === TimerStatus.TIMESUP && phase.mode !== "disabled") {
+            if (phase.mode === "disabled") return;
+
+            if (timer.status === TimerStatus.TIMESUP) {
                 setPhaseIndex(phaseIndex + 1);
+                if (isLastPhaseProfile(profile, phaseIndex))
+                    soundManagerRef.current.playStop();
+                else
+                    soundManagerRef.current.playPause();
+            } else if (timer.isRunning) {
+                if (timer.displayTicks > 30 * 1000) {
+                    timerWarningRef.current = false;
+                } else if (!timerWarningRef.current) {
+                    timerWarningRef.current = true;
+                    soundManagerRef.current.playWarning();
+                }
             }
         }, 1);
 
@@ -348,6 +376,7 @@ function App() {
 
         if (phase.mode !== "disabled") {
             timerRef.current.start();
+            soundManagerRef.current.playStart();
         } else {
             let nextProfile = profile.phases[phaseIndex + 1];
 
