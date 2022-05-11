@@ -5,19 +5,18 @@
 
 html {
   height: 100%;
+  font: 4vh 'Digital-7', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: Arial;
   background-image: url("../public/field-background.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   min-height: 100%;
   margin: 0;
-  font: 4vh 'Digital-7', monospace;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   color: white;
   overflow: hidden;
 }
@@ -74,8 +73,8 @@ body {
     position: relative;
 
     .timer-display {
-      line-height: 38vh;
-      font-size: 46vh;
+      line-height: 9.5rem;
+      font-size: 11.5rem;
 
       >span {
         position: relative;
@@ -83,18 +82,18 @@ body {
 
       .button {
         text-align: center;
-        font-size: 2rem;
-        width: 40vh;
+        font-size: 1rem;
+        width: 10rem;
         display: inline-block;
         margin: 0;
         text-align: center;
         color: #C9C9C9;
         position: absolute;
         left: 0;
-        bottom: -2vh;
+        bottom: -0.5rem;
         width: 100%;
-        height: 2rem;
-        line-height: 2rem;
+        height: 1rem;
+        line-height: 1rem;
         z-index: 100;
 
         span {
@@ -112,8 +111,8 @@ body {
       // background-color: black;
       position: absolute;
       top: 3.2vh;
-      right: -25vh;
-      width: 25vh;
+      right: -6.25rem;
+      width: 6.25rem;
 
       .mode-info span {
         cursor: pointer;
@@ -167,7 +166,7 @@ body {
       text-align: center;
 
       .profile {
-        width: 16vh;
+        width: 4rem;
         display: inline-block;
 
         span {
@@ -179,7 +178,7 @@ body {
       .indicator {
         border: 1px solid #FFFFFF;
         position: absolute;
-        width: 12vh;
+        width: 3rem;
         height: 0.1rem;
         bottom: -0.4rem;
         left: 31vw;
