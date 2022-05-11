@@ -1,0 +1,193 @@
+@font-face {
+  font-family: "Digital-7";
+  src: url("../public/digital-7.mono.ttf");
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: Arial;
+  background-image: url("../public/field-background.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100%;
+  margin: 0;
+  font: 4vh 'Digital-7', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: white;
+  overflow: hidden;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.app-body {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-content: stretch;
+  -ms-flex-line-pack: stretch;
+  align-content: stretch;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+
+  .app-timer-component {
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+    height: 38vh;
+    position: relative;
+
+    .timer-display {
+      line-height: 38vh;
+      font-size: 46vh;
+
+      >span {
+        position: relative;
+      }
+
+      .button {
+        text-align: center;
+        font-size: 2rem;
+        width: 40vh;
+        display: inline-block;
+        margin: 0;
+        text-align: center;
+        color: #C9C9C9;
+        position: absolute;
+        left: 0;
+        bottom: -2vh;
+        width: 100%;
+        height: 2rem;
+        line-height: 2rem;
+        z-index: 100;
+
+        span {
+          cursor: pointer;
+
+          &:hover {
+            color: #FFFFFF;
+          }
+        }
+      }
+
+    }
+
+    .timer-info-body {
+      // background-color: black;
+      position: absolute;
+      top: 3.2vh;
+      right: -25vh;
+      width: 25vh;
+
+      .mode-info span {
+        cursor: pointer;
+      }
+
+      .profile-setting {
+        margin-top: 2.5rem;
+
+        *[contenteditable=true] {
+          color: #C9C9C9;
+          outline: none;
+          word-spacing: nowrap;
+        }
+      }
+    }
+  }
+
+  .app-component {
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+    position: relative;
+    width: 100vw;
+
+    .header-body {
+      position: absolute;
+      top: 8vh;
+      width: 100vw;
+
+      p {
+        margin: 0.2rem 0 0;
+        text-align: center;
+      }
+
+      .controller-info span:hover {
+        cursor: pointer;
+      }
+
+    }
+
+    .footer-body {
+      position: absolute;
+      bottom: 8vh;
+      width: 100vw;
+      text-align: center;
+
+      .profile {
+        width: 16vh;
+        display: inline-block;
+
+        span {
+          cursor: pointer;
+          position: relative;
+        }
+      }
+
+      .indicator {
+        border: 1px solid #FFFFFF;
+        position: absolute;
+        width: 12vh;
+        height: 0.1rem;
+        bottom: -0.4rem;
+        left: 31vw;
+        transform: translateX(-50%);
+        background-color: white;
+        border-radius: 0.1rem;
+        transition: left 0.3s, width 0.3s;
+      }
+    }
+  }
+}
