@@ -266,7 +266,7 @@ function App() {
                 if (isLastPhaseProfile(profile, phaseIndex))
                     soundManager.playStop();
                 else
-                soundManager.playPause();
+                    soundManager.playPause();
             } else if (timer.isRunning) {
                 if (timer.displayTicks > 30 * 1000) {
                     setTimerWarning(false);
@@ -387,7 +387,7 @@ function App() {
 
     return (
         <div className="app noselect">
-            <div className="app-body" style={{opacity: timerState ? 1 : 0}}>
+            <div className="app-body" style={{ opacity: timerState ? 1 : 0 }}>
                 <div className="app-component">
                     <div className="header-body">
                         <p className='controller-info'>
@@ -452,7 +452,9 @@ function App() {
                                 className="profile"
                                 key={index}
                                 ref={el => profileDOMsRef.current[index] = el as HTMLElement}>
-                                <span onClick={() => { setSelectedProfile(index); setPhaseIndex(0) }}>
+                                <span
+                                    className={selectedProfile === index ? "selected" : ""}
+                                    onClick={() => { setSelectedProfile(index); setPhaseIndex(0) }}>
                                     {profile.name}
                                 </span>
                             </div>
