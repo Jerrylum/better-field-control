@@ -400,7 +400,7 @@ function App() {
 
     return (
         <div className="app noselect">
-            <div className="app-body">
+            <div className="app-body" style={{opacity: timerState ? 1 : 0}}>
                 <div className="app-component">
                     <div className="header-body">
                         <p className='controller-info'>

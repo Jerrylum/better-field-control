@@ -58,6 +58,7 @@ body {
   align-items: center;
   width: 100vw;
   height: 100vh;
+  transition: opacity 0.2s;
 
   .app-timer-component {
     -webkit-order: 0;
@@ -108,7 +109,6 @@ body {
     }
 
     .timer-info-body {
-      // background-color: black;
       position: absolute;
       top: 3.2vh;
       right: -6.25rem;
