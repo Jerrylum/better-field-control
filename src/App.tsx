@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import './App.scss';
+import './style/App.scss';
 import 'intro.js/introjs.css';
-import './introjs-flattener.scss';
+import './style/introjs-flattener.scss';
 import { Controller } from './Controller';
 import { defaultMatchProfile, MatchMode, MatchProfile } from './Match';
 import { useWindowSize } from './Util';

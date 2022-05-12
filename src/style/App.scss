@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Digital-7";
-  src: url("../public/digital-7.mono.ttf");
+  src: url("../../public/digital-7.mono.ttf");
 }
 
 html {
@@ -53,7 +53,7 @@ html {
 }
 
 body {
-  background-image: url("../public/field-background.svg");
+  background-image: url("../../public/field-background.svg");
   background-color: #8a8c8f;
   background-size: cover;
   background-repeat: no-repeat;
