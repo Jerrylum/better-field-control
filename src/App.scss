@@ -11,6 +11,10 @@ html {
 }
 
 // 900w 600h
+// line-height: 9.5rem;
+// font-size: min(max(11.5rem, 35vh), 40vw);
+
+
 
 @media (max-width: 160vh) {
   html {
@@ -20,6 +24,30 @@ html {
   // body {
   //   opacity: 0.7;
   // }
+}
+
+@media (max-width: 120vh) {
+  html {
+    font-size: 2.5vw;
+  }
+
+  body {
+    opacity: 0.7;
+  }
+
+  .timer-info-body {
+    right: auto !important;
+    top: 13.9rem !important;
+    // left: 2.8rem;
+    z-index: 100;
+
+    .profile-setting {
+      position: absolute;
+      left: 6.25rem;
+      top: 0;
+      margin: 0 !important;
+    }
+  }
 }
 
 @media (max-width: 100vh) {
