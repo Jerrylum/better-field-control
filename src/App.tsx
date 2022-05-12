@@ -396,7 +396,7 @@ function App() {
             steps: [
                 {
                     element: document.querySelector('.controller-info>span') ?? document.body,
-                    title: 'Connect A Controller',
+                    title: 'Setup Your Field',
                     intro: 'Plug your controllers to the PC, then click here to connect them!<br/><br/>You can connect more than once, and they will be connected automatically next time.'
                 },
                 {
