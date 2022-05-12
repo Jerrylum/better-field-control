@@ -5,45 +5,29 @@
 
 html {
   height: 100%;
-  font: 4vh 'Digital-7', monospace;
+
+  font: 4vh "Digital-7", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-// 900w 600h
-// line-height: 9.5rem;
-// font-size: min(max(11.5rem, 35vh), 40vw);
-
-
 
 @media (max-width: 160vh) {
   html {
     font-size: 2.5vw;
   }
-
-  // body {
-  //   opacity: 0.7;
-  // }
 }
 
 @media (max-width: 120vh) {
-  html {
-    font-size: 2.5vw;
-  }
-
-  body {
-    opacity: 0.7;
-  }
-
   .timer-info-body {
     right: auto !important;
-    top: 13.9rem !important;
-    // left: 2.8rem;
+    top: 36vh !important;
+    left: 1vw;
     z-index: 100;
+    font-size: max(2.5vw, 4vh) !important;
 
     .profile-setting {
       position: absolute;
-      left: 6.25rem;
+      left: calc(max(2.5vw, 4vh) * 6);
       top: 0;
       margin: 0 !important;
     }
@@ -57,7 +41,7 @@ html {
 
   .profile span.selected::after {
     content: "";
-    border: 1px solid #FFFFFF;
+    border: 1px solid #ffffff;
     position: absolute;
     width: 100%;
     height: 0.05em;
@@ -70,6 +54,7 @@ html {
 
 body {
   background-image: url("../public/field-background.svg");
+  background-color: #8a8c8f;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -133,9 +118,9 @@ body {
 
     .timer-display {
       line-height: 9.5rem;
-      font-size: 11.5rem;
+      font-size: min(max(11.5rem, 35vh), 40vw);
 
-      >span {
+      > span {
         position: relative;
       }
 
@@ -146,7 +131,7 @@ body {
         display: inline-block;
         margin: 0;
         text-align: center;
-        color: #C9C9C9;
+        color: #c9c9c9;
         position: absolute;
         left: 0;
         bottom: min(-0.5rem, -2vh);
@@ -159,11 +144,10 @@ body {
           cursor: pointer;
 
           &:hover {
-            color: #FFFFFF;
+            color: #ffffff;
           }
         }
       }
-
     }
 
     .timer-info-body {
@@ -171,6 +155,7 @@ body {
       top: 0.9rem;
       right: -6.25rem;
       width: 6.25rem;
+      font-size: min(2.5vw, 4vh);
 
       .mode-info span {
         cursor: pointer;
@@ -179,8 +164,8 @@ body {
       .profile-setting {
         margin-top: 2.5rem;
 
-        *[contenteditable=true] {
-          color: #C9C9C9;
+        *[contenteditable="true"] {
+          color: #c9c9c9;
           outline: none;
           word-spacing: nowrap;
         }
@@ -200,7 +185,7 @@ body {
     align-self: auto;
     position: relative;
     width: 100vw;
-    font-size: max(2.5vw, 4vh);
+    font-size: max(1.5vw, 4vh);
 
     .header-body {
       position: absolute;
@@ -215,7 +200,6 @@ body {
       .controller-info span:hover {
         cursor: pointer;
       }
-
     }
 
     .footer-body {
@@ -235,7 +219,7 @@ body {
       }
 
       .indicator {
-        border: 1px solid #FFFFFF;
+        border: 1px solid #ffffff;
         position: absolute;
         width: 3rem;
         height: 0.05rem;
