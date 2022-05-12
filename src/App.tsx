@@ -8,9 +8,9 @@ import { SoundManager } from './SoundManager';
 
 function App() {
 
-    const [controllers, setControllers] = useState<Controller[]>([]);
+    const [controllers] = useState(new Set<Controller>());
 
-    const [profiles, setProfiles] = useState<MatchProfile[]>(defaultMatchProfile());
+    const [profiles] = useState<MatchProfile[]>(defaultMatchProfile());
 
     const [selectedProfile, setSelectedProfile] = useState<number>(0);
 
@@ -40,8 +40,10 @@ function App() {
         let controller = new Controller();
         try {
             await controller.connect();
-            setControllers([...controllers, controller]);
+            controllers.add(controller);
             console.log("Controller connected");
+
+            sendControllersMatchMode(usingMatchMode);
         } catch (e) {
             console.log("Failed to connect controller");
         }
@@ -276,21 +278,16 @@ function App() {
                 }
             }
         }, 1);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timerState, timerUpdateRequest]);
 
     useEffect(() => {
         setTimeout(async () => {
             setControllerState(c => c + 1);
-
-            let update = false;
-
-            let newControllerSet = [];
+            
             for (let controller of controllers) {
-                if (controller.isConnected()) {
-                    newControllerSet.push(controller);
-                } else {
-                    update = true;
+                if (!controller.isConnected()) {
+                    controllers.delete(controller);
                     console.log("Controller disconnected");
                 }
             }
@@ -299,16 +296,14 @@ function App() {
             try {
                 await controller.connect(false);
                 if (controller.isConnected()) {
-                    newControllerSet.push(controller);
-                    update = true;
+                    controllers.add(controller);
                     console.log("Controller connected automatically");
+
+                    sendControllersMatchMode(usingMatchMode);
                 }
             } catch (e) { }
-
-            if (update)
-                setControllers(newControllerSet);
         }, 200);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [controllerState]);
 
     useEffect(() => {
@@ -343,6 +338,7 @@ function App() {
         let newTimer = new CountdownTimer();
         newTimer.set(profile.phases[1].duration * 1000);
         setTimer(newTimer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profiles, selectedProfile]);
 
     useEffect(() => {
@@ -379,11 +375,13 @@ function App() {
         }
 
         setUsingMatchMode(phase.mode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [phaseIndex, profiles, selectedProfile, timerUpdateRequest]);
 
     useEffect(() => {
         sendControllersMatchMode(usingMatchMode);
-    }, [usingMatchMode, controllers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [usingMatchMode]);
 
     return (
         <div className="app noselect">
@@ -392,7 +390,7 @@ function App() {
                     <div className="header-body">
                         <p className='controller-info'>
                             <span onClick={handleConnect}>
-                                {controllers.length} Controller{controllers.length > 1 ? "s" : ""} Connected
+                                {controllers.size} Controller{controllers.size > 1 ? "s" : ""} Connected
                             </span>
                         </p>
                         <p>{timerState && getStatusTitle()}</p>
