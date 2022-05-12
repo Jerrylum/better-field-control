@@ -1,10 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './App.scss';
+import 'intro.js/introjs.css';
+import './introjs-flattener.scss';
 import { Controller } from './Controller';
 import { defaultMatchProfile, MatchMode, MatchProfile } from './Match';
 import { useWindowSize } from './Util';
 import { CountdownTimer, TimerStatus } from './Timer';
 import { SoundManager } from './SoundManager';
+import introJs from 'intro.js';
+
+let appInited = 0; // HACK: to prevent multiple inits in development mode
 
 function App() {
 
@@ -278,13 +283,13 @@ function App() {
                 }
             }
         }, 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timerState, timerUpdateRequest]);
 
     useEffect(() => {
         setTimeout(async () => {
             setControllerState(c => c + 1);
-            
+
             for (let controller of controllers) {
                 if (!controller.isConnected()) {
                     controllers.delete(controller);
@@ -303,7 +308,7 @@ function App() {
                 }
             } catch (e) { }
         }, 200);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [controllerState]);
 
     useEffect(() => {
@@ -338,7 +343,7 @@ function App() {
         let newTimer = new CountdownTimer();
         newTimer.set(profile.phases[1].duration * 1000);
         setTimer(newTimer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profiles, selectedProfile]);
 
     useEffect(() => {
@@ -375,13 +380,60 @@ function App() {
         }
 
         setUsingMatchMode(phase.mode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [phaseIndex, profiles, selectedProfile, timerUpdateRequest]);
 
     useEffect(() => {
         sendControllersMatchMode(usingMatchMode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [usingMatchMode]);
+
+    useEffect(() => {
+        if (appInited++) return;
+
+        let t = introJs();
+        t.setOptions({
+            steps: [
+                {
+                    element: document.querySelector('.controller-info>span') ?? document.body,
+                    title: 'Connect A Controller',
+                    intro: 'Plug your controllers to the PC, then click here to connect them!<br/><br/>You can connect more than once, and they will be connected automatically next time.'
+                },
+                {
+                    title: 'Select A Profile',
+                    element: document.querySelector('.footer-body>span') ?? document.body,
+                    intro: 'By default it is 15sec autonomous and 1:45 driver control.<br/><br/>You can switch to another profile. For exmaple: use "DRIVER" if you are working on 1 minute skill chanllenge.'
+                },
+                {
+                    title: 'Custom Duration!',
+                    element: document.querySelector('.profile-setting') ?? document.body,
+                    intro: 'If none of them work for you, select "CUSTOM" profile and click the numbers above to edit the durations.'
+                },
+                {
+                    title: 'Start The Timer',
+                    element: document.querySelector('#btn1>span') ?? document.body,
+                    intro: 'The robots will be enabled and disabled over time.'
+                },
+                {
+                    title: 'Mode Indicator',
+                    element: document.querySelector('.mode-info') ?? document.body,
+                    intro: 'You can see what mode is on right here.<br/><br/>If you don\'t want to use a timer, you can also click these buttons to switch modes manually.'
+                },
+                {
+                    title: 'That\'s It!',
+                    intro: 'This is a free software under GNU GPL license written by team 7984.<br/><br/>You can find more information <a target="blank" href="https://github.com/Jerrylum/better-field-control">here</a>. Have fun and good luck!'
+                }
+            ]
+        }).onbeforechange(function() {
+            if (t.currentStep() === 2) {
+                setSelectedProfile(4);
+            } else {
+                setSelectedProfile(0);
+            }
+        }).start();
+
+
+    }, []);
 
     return (
         <div className="app noselect">
@@ -400,13 +452,13 @@ function App() {
                     <div className="timer-body">
                         <span className="timer-display">
                             <span>{timerState && getMinuteNumber()}
-                                <div className="button" style={getBtnStyle()}>
+                                <div id="btn1" className="button" style={getBtnStyle()}>
                                     <span onClick={btn1ClickEvent}>{getBtn1Text()}</span>
                                 </div>
                             </span>
                             <span>:</span>
                             <span>{timerState && getSecondNumber()}
-                                <div className="button" style={getBtnStyle()}>
+                                <div id="btn2" className="button" style={getBtnStyle()}>
                                     <span onClick={btn2ClickEvent}>{getBtn2Text()}</span>
                                 </div>
                             </span>
@@ -425,7 +477,7 @@ function App() {
                             </span><br />
                             <span></span>
                         </div>
-                        <div className="profile-setting" style={{ "display": selectedProfile === 4 ? "" : "none" }}>
+                        <div className="profile-setting" style={{ "visibility": selectedProfile === 4 ? "visible" : "hidden" }}>
                             <span>
                                 &nbsp;&nbsp;AUTO:&nbsp;&nbsp;
                                 <span contentEditable
@@ -445,19 +497,21 @@ function App() {
                 </div>
                 <div className="app-component">
                     <div className="footer-body">
-                        {profiles.map((profile, index) => {
-                            return <div
-                                className="profile"
-                                key={index}
-                                ref={el => profileDOMsRef.current[index] = el as HTMLElement}>
-                                <span
-                                    className={selectedProfile === index ? "selected" : ""}
-                                    onClick={() => { setSelectedProfile(index); setPhaseIndex(0) }}>
-                                    {profile.name}
-                                </span>
-                            </div>
-                        })}
+                        <span>
+                            {profiles.map((profile, index) => {
+                                return <div
+                                    className="profile"
+                                    key={index}
+                                    ref={el => profileDOMsRef.current[index] = el as HTMLElement}>
+                                    <span
+                                        className={selectedProfile === index ? "selected" : ""}
+                                        onClick={() => { setSelectedProfile(index); setPhaseIndex(0) }}>
+                                        {profile.name}
+                                    </span>
+                                </div>
+                            })}
 
+                        </span>
                         <div className="indicator" style={profileIndicatorStyle}></div>
                     </div>
                 </div>

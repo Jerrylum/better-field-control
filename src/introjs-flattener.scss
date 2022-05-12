@@ -1,0 +1,78 @@
+.introjs-helperNumberLayer {
+  font-family: monospace;
+  font-size: 14px;
+  text-shadow: none;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  border: 2px solid #ecf0f1;
+  border-radius: 50%;
+  background: #e74c3c;
+}
+
+.introjs-helperLayer {
+  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 2px;
+}
+
+.introjs-skipbutton {
+  padding-right: 7px;
+}
+
+.introjs-tooltip-header {
+  padding-right: 10px;
+}
+
+.introjs-tooltip {
+  letter-spacing: 0.1em;
+  color: black;
+  font-size: 0.5rem;
+  font-family: monospace !important;
+  border-radius: 10px;
+  background-color: white;
+  width: 16vw;
+  max-width: 16vw;
+}
+
+.introjs-tooltipReferenceLayer * {
+  font-family: monospace !important;
+}
+
+.introjs-button {
+  padding: 0.6em 0.8em;
+  text-shadow: none;
+  font-weight: bold;
+  font-family: monospace;
+  background: white !important;
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.introjs-prevbutton {
+  border-radius: 0.2em 0 0 0.2em;
+}
+
+.introjs-nextbutton {
+  border-radius: 0 0.2em 0.2em 0;
+}
+
+.introjs-bullets {
+  padding: 0;
+}
+
+.introjs-tooltipbuttons {
+  border: none;
+}
+
+.introjs-button:hover {
+  color: black;
+}
+
+.introjs-disabled {
+  color: #c9c9c9 !important;
+}
