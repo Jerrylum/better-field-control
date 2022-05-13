@@ -41,6 +41,8 @@ function App() {
 
     const windowSize = useWindowSize();
 
+    useMemo(() => profiles[4] = JSON.parse(localStorage.getItem("custom-profile") || JSON.stringify(profiles[4])), []);
+
     const handleConnect = async function () {
         let controller = new Controller();
         try {
@@ -237,24 +239,27 @@ function App() {
         }
     }
 
-    const customProfileAutoDurationChange = function (event: React.ChangeEvent<HTMLInputElement>) {
-        numberEditableInputEvent(event);
-        profiles[4].phases[1].duration = parseInt(event.currentTarget.innerText);
-
+    const customProfileUpdate = function () {
         if (selectedProfile === 4) {
             setPhaseIndex(0);
             setTimerUpdateRequest(timerUpdateRequest + 1);
         }
+
+        localStorage.setItem("custom-profile", JSON.stringify(profiles[4]));
+    }
+
+    const customProfileAutoDurationChange = function (event: React.ChangeEvent<HTMLInputElement>) {
+        numberEditableInputEvent(event);
+        profiles[4].phases[1].duration = parseInt(event.currentTarget.innerText);
+
+        customProfileUpdate();
     }
 
     const customProfileDriverDurationChange = function (event: React.ChangeEvent<HTMLInputElement>) {
         numberEditableInputEvent(event);
         profiles[4].phases[3].duration = parseInt(event.currentTarget.innerText);
 
-        if (selectedProfile === 4) {
-            setPhaseIndex(0);
-            setTimerUpdateRequest(timerUpdateRequest + 1);
-        }
+        customProfileUpdate();
     }
 
     useEffect(() => {
@@ -391,47 +396,52 @@ function App() {
     useEffect(() => {
         if (appInited++) return;
 
-        let t = introJs();
-        t.setOptions({
-            steps: [
-                {
-                    element: document.querySelector('.controller-info>span') ?? document.body,
-                    title: 'Setup Your Field',
-                    intro: 'Plug your controllers to the PC, then click here to connect them!<br/><br/>You can connect more than once, and they will be connected automatically next time.'
-                },
-                {
-                    title: 'Select A Profile',
-                    element: document.querySelector('.footer-body>span') ?? document.body,
-                    intro: 'By default it is 15sec autonomous and 1:45 driver control.<br/><br/>You can switch to another profile. For exmaple: use "DRIVER" if you are working on 1 minute skill chanllenge.'
-                },
-                {
-                    title: 'Custom Duration!',
-                    element: document.querySelector('.profile-setting') ?? document.body,
-                    intro: 'If none of them work for you, select "CUSTOM" profile and click the numbers above to edit the durations.'
-                },
-                {
-                    title: 'Start The Timer',
-                    element: document.querySelector('#btn1>span') ?? document.body,
-                    intro: 'The robots will be enabled and disabled over time.'
-                },
-                {
-                    title: 'Mode Indicator',
-                    element: document.querySelector('.mode-info') ?? document.body,
-                    intro: 'You can see what mode is on right here.<br/><br/>If you don\'t want to use a timer, you can also click these buttons to switch modes manually.'
-                },
-                {
-                    title: 'That\'s It!',
-                    intro: 'This is a free software under GNU GPL license written by team 7984.<br/><br/>You can find more information <a target="blank" href="https://github.com/Jerrylum/better-field-control">here</a>. Have fun and good luck!'
-                }
-            ]
-        }).onbeforechange(function() {
-            if (t.currentStep() === 2) {
-                setSelectedProfile(4);
-            } else {
-                setSelectedProfile(0);
-            }
-        }).start();
+        if (localStorage.getItem("intro-tutorial-done") !== null) return;
 
+        setTimeout(() => {
+            let t = introJs();
+            t.setOptions({
+                steps: [
+                    {
+                        element: document.querySelector('.controller-info>span') ?? document.body,
+                        title: 'Setup Your Field',
+                        intro: 'Plug your controllers to the PC, then click here to connect them!<br/><br/>You can connect more than once, and they will be connected automatically next time.'
+                    },
+                    {
+                        title: 'Select A Profile',
+                        element: document.querySelector('.footer-body>span') ?? document.body,
+                        intro: 'By default it is 15sec autonomous and 1:45 driver control.<br/><br/>You can switch to another profile. For exmaple: use "DRIVER" if you are working on 1 minute skill chanllenge.'
+                    },
+                    {
+                        title: 'Custom Duration!',
+                        element: document.querySelector('.profile-setting') ?? document.body,
+                        intro: 'If none of them work for you, select "CUSTOM" profile and click the numbers above to edit the durations.'
+                    },
+                    {
+                        title: 'Start The Timer',
+                        element: document.querySelector('#btn1>span') ?? document.body,
+                        intro: 'The robots will be enabled and disabled over time.'
+                    },
+                    {
+                        title: 'Mode Indicator',
+                        element: document.querySelector('.mode-info') ?? document.body,
+                        intro: 'You can see what mode is on right here.<br/><br/>If you don\'t want to use a timer, you can also click these buttons to switch modes manually.'
+                    },
+                    {
+                        title: 'That\'s It!',
+                        intro: 'This is a free software under GNU GPL license written by team 7984.<br/><br/>You can find more information <a target="blank" href="https://github.com/Jerrylum/better-field-control">here</a>. Have fun and good luck!'
+                    }
+                ]
+            }).onbeforechange(() => {
+                if (t.currentStep() === 2) {
+                    setSelectedProfile(4);
+                } else {
+                    setSelectedProfile(0);
+                }
+            }).oncomplete(() => {
+                localStorage.setItem("intro-tutorial-done", "true");
+            }).start();
+        }, 200);
 
     }, []);
 
@@ -483,14 +493,14 @@ function App() {
                                 <span contentEditable
                                     onKeyPress={numberEditableKeypressEvent}
                                     onInput={customProfileAutoDurationChange}
-                                    suppressContentEditableWarning={true}>15</span>
+                                    suppressContentEditableWarning={true}>{profiles[4].phases[1].duration}</span>
                             </span><br />
                             <span>
                                 &nbsp;&nbsp;Driver:
                                 <span contentEditable
                                     onKeyPress={numberEditableKeypressEvent}
                                     onInput={customProfileDriverDurationChange}
-                                    suppressContentEditableWarning={true}>105</span>
+                                    suppressContentEditableWarning={true}>{profiles[4].phases[3].duration}</span>
                             </span>
                         </div>
                     </div>
