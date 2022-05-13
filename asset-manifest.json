@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/field.jerryio.com/static/css/main.54f00403.css",
+    "main.js": "/field.jerryio.com/static/js/main.ea63de7c.js",
+    "static/js/787.9e15379f.chunk.js": "/field.jerryio.com/static/js/787.9e15379f.chunk.js",
+    "static/media/Start.wav": "/field.jerryio.com/static/media/Start.71e93f3b5db58aac23b1.wav",
+    "static/media/Warning.wav": "/field.jerryio.com/static/media/Warning.cff05c313b539a55e126.wav",
+    "static/media/Pause.wav": "/field.jerryio.com/static/media/Pause.7d83f1685e90184a64c9.wav",
+    "static/media/Stop.wav": "/field.jerryio.com/static/media/Stop.947a43fd7962c1b99003.wav",
+    "service-worker.js": "/field.jerryio.com/service-worker.js",
+    "static/media/Abort.wav": "/field.jerryio.com/static/media/Abort.57cc291fa55bb66ae485.wav",
+    "static/media/digital-7.mono.ttf": "/field.jerryio.com/static/media/digital-7.mono.ae951a188b593952b384.ttf",
+    "index.html": "/field.jerryio.com/index.html",
+    "static/media/field-background.svg": "/field.jerryio.com/static/media/field-background.afb67a5ebaa175cbb51a.svg",
+    "main.54f00403.css.map": "/field.jerryio.com/static/css/main.54f00403.css.map",
+    "main.ea63de7c.js.map": "/field.jerryio.com/static/js/main.ea63de7c.js.map",
+    "787.9e15379f.chunk.js.map": "/field.jerryio.com/static/js/787.9e15379f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.54f00403.css",
+    "static/js/main.ea63de7c.js"
+  ]
+}
