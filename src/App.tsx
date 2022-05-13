@@ -37,10 +37,13 @@ function App() {
 
     const profileDOMsRef = useRef<HTMLElement[]>([]);
 
+    const customProfileNumDOMsRef = useRef<HTMLElement[]>([]);
+
     const soundManager = useMemo(() => new SoundManager(), []);
 
     const windowSize = useWindowSize();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => profiles[4] = JSON.parse(localStorage.getItem("custom-profile") || JSON.stringify(profiles[4])), []);
 
     const handleConnect = async function () {
@@ -396,6 +399,9 @@ function App() {
     useEffect(() => {
         if (appInited++) return;
 
+        customProfileNumDOMsRef.current[0].innerText = profiles[4].phases[1].duration + "";
+        customProfileNumDOMsRef.current[1].innerText = profiles[4].phases[3].duration + "";
+
         if (localStorage.getItem("intro-tutorial-done") !== null) return;
 
         setTimeout(() => {
@@ -442,7 +448,7 @@ function App() {
                 localStorage.setItem("intro-tutorial-done", "true");
             }).start();
         }, 200);
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -493,14 +499,16 @@ function App() {
                                 <span contentEditable
                                     onKeyPress={numberEditableKeypressEvent}
                                     onInput={customProfileAutoDurationChange}
-                                    suppressContentEditableWarning={true}>{profiles[4].phases[1].duration}</span>
+                                    suppressContentEditableWarning={true}
+                                    ref={el => customProfileNumDOMsRef.current[0] = el as HTMLElement}></span>
                             </span><br />
                             <span>
                                 &nbsp;&nbsp;Driver:
                                 <span contentEditable
                                     onKeyPress={numberEditableKeypressEvent}
                                     onInput={customProfileDriverDurationChange}
-                                    suppressContentEditableWarning={true}>{profiles[4].phases[3].duration}</span>
+                                    suppressContentEditableWarning={true}
+                                    ref={el => customProfileNumDOMsRef.current[1] = el as HTMLElement}></span>
                             </span>
                         </div>
                     </div>
